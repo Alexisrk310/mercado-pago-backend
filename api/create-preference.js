@@ -10,12 +10,10 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Manejar solicitud preflight (OPTIONS)
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  // Solo permitir POST
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método no permitido" });
   }
@@ -39,7 +37,11 @@ export default async function handler(req, res) {
     };
 
     const response = await mercadopago.preferences.create(preference);
-    return res.status(200).json({ init_point: response.body.init_point });
+
+    return res.status(200).json({
+      init_point: response.body.init_point,     
+      preference_id: response.body.id           
+    });
   } catch (error) {
     console.error("Error al crear preferencia:", error);
     return res.status(500).json({ error: "Error al crear preferencia" });
