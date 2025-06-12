@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
     const preference = {
       items: items.map((item) => ({
-        title: item.name,
+        title: "Rafa Express",
         quantity: item.quantity,
         unit_price: item.price,
         currency_id: "COP",
