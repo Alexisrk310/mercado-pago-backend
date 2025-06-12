@@ -5,6 +5,17 @@ mercadopago.configure({
 });
 
 export default async function handler(req, res) {
+  // Configurar CORS
+  res.setHeader("Access-Control-Allow-Origin", "https://landing-page-template-opal.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Manejar solicitud preflight (OPTIONS)
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Solo permitir POST
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método no permitido" });
   }
