@@ -21,6 +21,9 @@ export default async function handler(req, res) {
   try {
     const items = req.body.items;
 
+    // ✅ Calcular amount antes
+    const amount = items.reduce((total, item) => total + item.price * item.quantity, 0);
+
     const preference = {
       items: items.map((item) => ({
         title: item.name,
@@ -39,8 +42,9 @@ export default async function handler(req, res) {
     const response = await mercadopago.preferences.create(preference);
 
     return res.status(200).json({
-      init_point: response.body.init_point,     
-      preference_id: response.body.id           
+      init_point: response.body.init_point,
+      preference_id: response.body.id,
+      amount, // ✅ Ya lo tienes calculado aquí
     });
   } catch (error) {
     console.error("Error al crear preferencia:", error);
