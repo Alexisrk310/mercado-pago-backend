@@ -24,20 +24,7 @@ export default async function handler(req, res) {
     // ✅ Calcular amount antes
     const amount = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
-    const preference = {
-      items: items.map((item) => ({
-        title: "Rafa Express",
-        quantity: item.quantity,
-        unit_price: item.price,
-        currency_id: "COP",
-      })),
-      back_urls: {
-        success: "https://landing-page-template-opal.vercel.app/payment/success",
-        failure: "https://landing-page-template-opal.vercel.app/payment/failure",
-        pending: "https://landing-page-template-opal.vercel.app/payment/pending",
-      },
-      auto_return: "approved",
-    };
+      
 
     const response = await mercadopago.preferences.create(preference);
 
