@@ -1,7 +1,7 @@
 import mercadopago from "mercadopago";
 
 mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN, // ⚠️ Asegúrate de tener esto en Vercel
+  access_token: process.env.ACCESS_TOKEN,
 });
 
 export default async function handler(req, res) {
@@ -40,10 +40,17 @@ export default async function handler(req, res) {
         pending: "https://landing-page-template-opal.vercel.app/payment/pending",
       },
       auto_return: "approved",
+
+      // ✅ Habilitar todos los métodos de pago (incluido PSE)
       payment_methods: {
         excluded_payment_types: [
-         
+          // No excluyas ninguno si quieres permitir PSE, tarjeta, QR, etc.
         ],
+      },
+
+      // ✅ Habilitar pago como invitado
+      payer: {
+        email: "guest@example.com", // Importante que NO sea una cuenta de Mercado Pago real
       },
     };
 
