@@ -19,11 +19,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    const items = req.body.items.map((item) => ({
-      title: item.name + " - " + item.quantity + " unidades",
+    const itemsFromClient = req.body.items;
+
+    // Calcular el total de unidades de todos los productos
+    const totalUnidades = itemsFromClient.reduce(
+      (acc, item) => acc + item.quantity,
+      0
+    );
+
+    // Armar los items con título personalizado
+    const items = itemsFromClient.map((item) => ({
+      title: `${item.name} - ${item.quantity} unidades (Total carrito: ${totalUnidades})`,
       quantity: item.quantity,
       unit_price: item.price,
-      currency_id: "COP", // Puedes cambiar a "USD" si aplica
+      currency_id: "COP",
     }));
 
     const amount = items.reduce((total, item) => total + item.unit_price * item.quantity, 0);
@@ -31,9 +40,9 @@ export default async function handler(req, res) {
     const preference = {
       items,
       back_urls: {
-        success: "https://landing-page-template-opal.vercel.app/cart",
-        failure: "https://landing-page-template-opal.vercel.app/cart",
-        pending: "https://landing-page-template-opal.vercel.app/cart",
+        success: "https://landing-page-template-opal.vercel.app/payment/success",
+        failure: "https://landing-page-template-opal.vercel.app/payment/failure",
+        pending: "https://landing-page-template-opal.vercel.app/payment/pending",
       },
       auto_return: "approved",
     };
