@@ -1,11 +1,11 @@
 import mercadopago from "mercadopago";
 
 mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN,
+  access_token: process.env.ACCESS_TOKEN, // Asegúrate de tener tu token configurado en Vercel
 });
 
 export default async function handler(req, res) {
-  // Configurar CORS
+  // Configurar CORS para permitir solicitudes desde tu frontend
   res.setHeader("Access-Control-Allow-Origin", "https://landing-page-template-opal.vercel.app");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -19,19 +19,31 @@ export default async function handler(req, res) {
   }
 
   try {
-    const items = req.body.items;
+    const items = req.body.items.map((item) => ({
+      title: item.name,
+      quantity: item.quantity,
+      unit_price: item.price,
+      currency_id: "COP", // Puedes cambiar a "USD" si aplica
+    }));
 
-    // ✅ Calcular amount antes
-    const amount = items.reduce((total, item) => total + item.price * item.quantity, 0);
+    const amount = items.reduce((total, item) => total + item.unit_price * item.quantity, 0);
 
-      
+    const preference = {
+      items,
+      back_urls: {
+        success: "https://landing-page-template-opal.vercel.app/cart",
+        failure: "https://landing-page-template-opal.vercel.app/cart",
+        pending: "https://landing-page-template-opal.vercel.app/cart",
+      },
+      auto_return: "approved",
+    };
 
     const response = await mercadopago.preferences.create(preference);
 
     return res.status(200).json({
       init_point: response.body.init_point,
       preference_id: response.body.id,
-      amount, // ✅ Ya lo tienes calculado aquí
+      amount,
     });
   } catch (error) {
     console.error("Error al crear preferencia:", error);
