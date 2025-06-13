@@ -42,8 +42,7 @@ export default async function handler(req, res) {
       auto_return: "approved",
       payment_methods: {
         excluded_payment_types: [
-          { id: "ticket" },         // ❌ Excluye pagos en efectivo (si lo deseas)
-          { id: "bank_transfer" },  // ❌ Excluye transferencias (opcional)
+         
         ],
       },
     };
