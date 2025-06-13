@@ -1,17 +1,17 @@
+// pages/api/create-preference.js
 import mercadopago from "mercadopago";
 
 mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN,
+  access_token: process.env.ACCESS_TOKEN, // Asegúrate de configurar tu token en Vercel
 });
 
 export default async function handler(req, res) {
-  // CORS config
   res.setHeader("Access-Control-Allow-Origin", "https://landing-page-template-opal.vercel.app");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // CORS preflight
+    return res.status(200).end();
   }
 
   if (req.method !== "POST") {
@@ -21,8 +21,8 @@ export default async function handler(req, res) {
   try {
     const itemsFromClient = req.body.items;
 
-    if (!Array.isArray(itemsFromClient) || itemsFromClient.length === 0) {
-      return res.status(400).json({ error: "Debes enviar al menos un producto válido." });
+    if (!Array.isArray(itemsFromClient)) {
+      return res.status(400).json({ error: "Formato de items inválido" });
     }
 
     const items = itemsFromClient.map((item) => ({
@@ -40,17 +40,9 @@ export default async function handler(req, res) {
         pending: "https://landing-page-template-opal.vercel.app/payment/pending",
       },
       auto_return: "approved",
-
-      // ✅ Habilitar todos los métodos de pago (incluido PSE)
       payment_methods: {
-        excluded_payment_types: [
-          // No excluyas ninguno si quieres permitir PSE, tarjeta, QR, etc.
-        ],
-      },
-
-      // ✅ Habilitar pago como invitado
-      payer: {
-        email: "guest@example.com", // Importante que NO sea una cuenta de Mercado Pago real
+        excluded_payment_types: [],
+        excluded_payment_methods: [],
       },
     };
 
@@ -61,12 +53,6 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("Error al crear preferencia:", error);
-
-    const message =
-      error?.response?.body?.message ||
-      error?.message ||
-      "Error desconocido al crear preferencia.";
-
-    return res.status(500).json({ error: message });
+    return res.status(500).json({ error: "Error al crear preferencia" });
   }
 }
