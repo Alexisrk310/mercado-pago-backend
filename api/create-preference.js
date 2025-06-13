@@ -1,8 +1,7 @@
-// pages/api/create-preference.js
 import mercadopago from "mercadopago";
 
 mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN, // Asegúrate de configurar tu token en Vercel
+  access_token: process.env.ACCESS_TOKEN, // Tu Access Token (privado)
 });
 
 export default async function handler(req, res) {
@@ -40,10 +39,6 @@ export default async function handler(req, res) {
         pending: "https://landing-page-template-opal.vercel.app/payment/pending",
       },
       auto_return: "approved",
-      payment_methods: {
-        excluded_payment_types: [],
-        excluded_payment_methods: [],
-      },
     };
 
     const response = await mercadopago.preferences.create(preference);
