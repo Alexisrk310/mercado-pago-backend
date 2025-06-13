@@ -34,7 +34,6 @@ export default async function handler(req, res) {
 
     const preference = {
       items,
-      binary_mode: true, // ✅ Aprobación inmediata sin revisión manual
       back_urls: {
         success: "https://landing-page-template-opal.vercel.app/payment/success",
         failure: "https://landing-page-template-opal.vercel.app/payment/failure",
