@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
   try {
     const items = req.body.items.map((item) => ({
-      title: item.name,
+      title: item.name + " - " + item.quantity + " unidades",
       quantity: item.quantity,
       unit_price: item.price,
       currency_id: "COP", // Puedes cambiar a "USD" si aplica
