@@ -1,7 +1,8 @@
+// pages/api/create-preference.js
 import mercadopago from "mercadopago";
 
 mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN,
+  access_token: process.env.ACCESS_TOKEN, // Asegúrate de configurar tu token en Vercel
 });
 
 export default async function handler(req, res) {
@@ -20,10 +21,14 @@ export default async function handler(req, res) {
   try {
     const itemsFromClient = req.body.items;
 
+    if (!Array.isArray(itemsFromClient)) {
+      return res.status(400).json({ error: "Formato de items inválido" });
+    }
+
     const items = itemsFromClient.map((item) => ({
       title: item.name,
-      quantity: item.quantity,
-      unit_price: item.price,
+      quantity: Number(item.quantity),
+      unit_price: Number(item.price),
       currency_id: "COP",
     }));
 
@@ -35,7 +40,6 @@ export default async function handler(req, res) {
         pending: "https://landing-page-template-opal.vercel.app/payment/pending",
       },
       auto_return: "approved",
-      // 🔥 Agrega esta sección para aceptar todos los métodos y tipos de pago
       payment_methods: {
         excluded_payment_types: [],
         excluded_payment_methods: [],
